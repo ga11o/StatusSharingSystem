@@ -1,3 +1,4 @@
 # StatusSharingSystem
 ootomo
 yamamoto
+fujigaya
