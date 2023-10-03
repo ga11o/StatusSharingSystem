@@ -1,3 +1,3 @@
 # StatusSharingSystem
 ootomo
-fujigaya
+fuji
