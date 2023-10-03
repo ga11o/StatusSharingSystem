@@ -1,2 +1,2 @@
 # StatusSharingSystem
-ootomo
+phpは ver 8.2.4
