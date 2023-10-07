@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <?php
-    if(isset($_POST['username']) and !empty($user=$_POST['username'])){
+    if(isset($_POST['username']) and !empty($user=$_POST['username']) and !empty($POST['password'])){
         $user=htmlspecialchars($user,ENT_QUOTES|ENT_HTML5);
         $mode=1;
     }
