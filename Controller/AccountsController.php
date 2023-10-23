@@ -2,6 +2,8 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
+use Cake\Event\Event;
 
 /**
  * Accounts Controller
@@ -12,6 +14,35 @@ use App\Controller\AppController;
  */
 class AccountsController extends AppController
 {
+    public function beforeFilter(Event $event)
+    {
+        parent::beforeFilter($event);
+        $this->Auth->allow(['add']);//これを書かないとlogin画面しか表示できない。
+    }
+
+    public function login()//ログイン処理
+    {
+        if ($this->request->is('post')) {
+            $user = $this->Auth->identify();
+            if ($user) {
+                $this->Auth->setUser($user);
+                return $this->redirect($this->Auth->redirectUrl());
+            }else{
+            $this->Flash->error(__('ユーザーまたはパスワードに誤りがあります。'));
+            }
+        }
+    }
+
+    public function logout()
+    {
+        return $this->redirect($this->Auth->logout());
+    }
+
+    public function isAuthorized($user) 
+    {
+        return true;
+    }
+
     /**
      * Index method
      *
