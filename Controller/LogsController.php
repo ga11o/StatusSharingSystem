@@ -22,11 +22,6 @@ class LogsController extends AppController
         $logs = $this->paginate($this->Logs);
 
         $this->set(compact('logs'));
-
-        $this->loadModel('logs');
-        $data = $this->logs->find('all');
-        $this->set('data', $data);
-
     }
 
     /**

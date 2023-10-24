@@ -7,8 +7,8 @@ use Cake\ORM\Entity;
  * Log Entity
  *
  * @property string $id
- * @property int $physical
  * @property int $mental
+ * @property int $physical
  * @property string $time
  */
 class Log extends Entity
@@ -24,8 +24,8 @@ class Log extends Entity
      */
     protected $_accessible = [
         'id' => true,
-        'physical' => true,
         'mental' => true,
+        'physical' => true,
         'time' => true,
     ];
 }

@@ -48,14 +48,14 @@ class LogsTable extends Table
             ->notEmptyString('id');
 
         $validator
-            ->integer('physical')
-            ->requirePresence('physical', 'create')
-            ->notEmptyString('physical');
-
-        $validator
             ->integer('mental')
             ->requirePresence('mental', 'create')
             ->notEmptyString('mental');
+
+        $validator
+            ->integer('physical')
+            ->requirePresence('physical', 'create')
+            ->notEmptyString('physical');
 
         $validator
             ->scalar('time')
