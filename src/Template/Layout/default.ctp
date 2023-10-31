@@ -1,4 +1,6 @@
 <?php
+/* 40~45行目で、画面切り替えのボタンを画面上部に作成 */
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
