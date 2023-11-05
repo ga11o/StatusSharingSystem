@@ -1,0 +1,83 @@
+<?php
+namespace App\Controller;
+
+use App\Controller\AppController;
+class groupsController extends AppController{
+
+    /**
+     * index メソッド
+     * アカウント情報の一覧表示
+     */
+    public function index()
+    {
+        // team2/accountsのデータを変数$groupsに代入
+        $groups = $this->paginate($this->Groups);
+
+        // 取得したアカウント情報をビュー(Template/Groups/index.ctp)に渡す
+        // $groups 変数をビューにセットして、ビュー内でアカウント情報を利用できる
+        $this->set(compact('groups'));
+        
+    }
+
+    /**
+     * add メソッド
+     * team2/groups にレコード追加
+     */
+    public function add()
+    {
+        // team2/groups の空レコードを作成し変数 $group に代入
+        $group = $this->Groups->newEntity();
+
+        // Template/Groups/add.ctpのグループ情報入力フォームの内容がサーバに post された場合
+        if ($this->request->is('post')) {
+            // 入力されたグループ情報を変数 空レコード $groups に適用
+            // 入力されたグループ情報：gname,gid,name,admin
+            // おそらくこのコードがおかしい
+            $group = $this->Groups->patchEntity($group, $this->request->getData());
+            // team2/groups に保存成功
+            if ($this->Groups->save($group)) {
+                $this->Flash->success(__('グループが保存されました。'));
+                return $this->redirect(['action' => 'index']);
+            }
+            // team2/groups に保存失敗
+            $this->Flash->error(__('グループを保存できませんでした。もう一度お試しください。'));
+        }
+        $this->set(compact('group')); // ビュー(Template/Groups/add.ctp)にアカウント情報を渡す
+    }
+
+    /**
+     * view メソッド
+     * グループ作成後、そのグループを表示
+     */
+    public function view($gid)
+    {
+        $data = $this->Groups->find()->where(['gid' => $gid])->first();
+        $this->set(compact('data'));
+    }
+
+    /**
+     * statusinput メソッド
+     * 体調・心情をgroupsテーブルに追加
+     */
+    public function statusinput($name)
+    {
+        $data = $this->Groups->find()->where(['name' => $name])->first();//nameカラムが$nameの行を$dataに入れる。
+        if (!$data) {
+            throw new NotFoundException(__('データが見つかりません。'));
+        }
+        if ($this->request->is('post')) {
+            $input = $this->request->getData();//postで受け取った内容
+            $data -> physical = $input['physical'];//$dataのphysicalを入力された値に更新
+            $data -> mental = $input['mental'];//$dataのmentalを入力された値に更新
+            if ($this->Groups->save($data,false,array('physical','mental'))) {//physicalカラムとmentalカラムを更新
+                $this->Flash->success(__('状態登録完了'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+
+            $this->Flash->error(__('状態登録に失敗しました。再入力してください。'));
+        }
+        $this->set(compact('data'));
+    }
+    
+}
