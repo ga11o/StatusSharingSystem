@@ -2,14 +2,12 @@
 
 <?php if (isset($data)): ?>
 
-    <h1><?= h($gname->gname) ?></h1>
-
-    <?= $this->Html->link('一覧に戻る', ['controller' => 'Groups', 'action' => 'index'], ['class' => 'button']) ?>
+    <h1><?= h($ginfo->gname) ?></h1>
 
     <table>
         <tr>
             <th>グループID</th>
-            <td><?= h($gname->gid) ?></td>
+            <td><?= h($ginfo->gid) ?></td>
         </tr>
         <tr>
             <th>名前</th>
@@ -18,7 +16,17 @@
             <td><?= h($item->name) ?></td>
         </tr>
         <?php endforeach; ?>
-        <!-- 他の表示項目を追加 -->
+
+        <div style="margin-top: 20px;" style="text-align: center;">
+        <?= $this->Html->link('ユーザを追加する', 
+        ['controller' => 'Groups',
+         'action' => 'addUserToGroup',
+         '?' => [
+            'gname' => $ginfo->gname,
+            'gid'   => $ginfo->gid
+        ]],
+           ['class' => 'btn']) ?>
+        </div>
     </table>
 
 <?php else: ?>
