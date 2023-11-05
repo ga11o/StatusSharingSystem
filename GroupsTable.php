@@ -27,8 +27,8 @@ class GroupsTable extends Table
         // team2/groupsテーブルのレコードを表示する際に用いるフィールドを'gname'に設定
         $this->setDisplayField('gname');
         
-        // プライマリキーを'gid' と 'gname' の組み合わせに設定(一意性)
-        $this->setPrimaryKey(['gid','gname']);
+        // プライマリキーを'gid' と 'gname' と'name' の組み合わせに設定(一意性)
+        $this->setPrimaryKey(['gid','gname','name']);
     }
 
     /**
