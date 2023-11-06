@@ -20,4 +20,8 @@ class LogsController extends AppController
 
         $this->set('log', $log);
     }
+
+    /**
+     * 状態をlogsテーブルに追加するためにadd関数が必要。
+     */
 }
