@@ -51,16 +51,18 @@ class groupsController extends AppController{
      */
     public function view($gid)
     {
-        $data = $this->Groups->find()->where(['gid' => $gid])->first();
-        $this->set(compact('data'));
+        $data = $this->Groups->find()->where(['gid' => $gid])->all();
+        $ginfo = $this->Groups->find()->where(['gid' => $gid])->first();
+        $this->set(compact('data','ginfo'));
     }
 
     /**
      * statusinput メソッド
      * 体調・心情をgroupsテーブルに追加
      */
-    public function statusinput($name)
+    public function statusinput($name = null)
     {
+        debug($name); // $name の値をデバッグ出力
         $data = $this->Groups->find()->where(['name' => $name])->first();//nameカラムが$nameの行を$dataに入れる。
         if (!$data) {
             throw new NotFoundException(__('データが見つかりません。'));
@@ -78,6 +80,47 @@ class groupsController extends AppController{
             $this->Flash->error(__('状態登録に失敗しました。再入力してください。'));
         }
         $this->set(compact('data'));
+    }
+
+    /**
+     * addUserToGroup アクション
+     * グループにユーザ追加処理
+     */
+    public function addUserToGroup(){
+        // Groups, Accounts テーブルのモデルをロード
+        $this->loadModel('Groups');
+        $this->loadModel('Accounts');
+    
+        if ($this->request->is('post')) { // POST リクエストの場合の処理
+            // フォームからユーザIDを受け取る
+            $addUserId = $this->request->getData('id');
+    
+            // グループ情報をクエリパラメーターから取得
+            $gname = $this->request->getQuery('gname');
+            $gid = $this->request->getQuery('gid');
+    
+            // 新しいレコードを作成
+            $newUser = $this->Groups->newEntity();
+            $newUser->gname = $gname;
+            $newUser->gid = $gid;
+            $newUser->admin = 0;
+    
+            // ユーザの名前を取得
+            $user = $this->Accounts->find()->select(['name'])->where(['id' => $addUserId])->first();
+    
+            if ($user) {
+                $newUser->name = $user->name; // クエリの結果から名前を設定
+    
+                if ($this->Groups->save($newUser)) {
+                    $this->Flash->success(__('ユーザが追加されました。'));
+                    return $this->redirect(['action' => 'index']);
+                } else {
+                    $this->Flash->error(__('ユーザを追加できませんでした。もう一度お試しください。'));
+                }
+            } else {
+                $this->Flash->error(__('入力されたIDと一致するユーザが見つかりませんでした。もう一度お試しください。'));
+            }
+        }
     }
     
 }

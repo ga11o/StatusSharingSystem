@@ -28,7 +28,7 @@ class GroupsTable extends Table
         $this->setDisplayField('gname');
         
         // プライマリキーを'gid' と 'gname' の組み合わせに設定(一意性)
-        $this->setPrimaryKey(['gid','gname']);
+        $this->setPrimaryKey(['name','gid','gname']);
     }
 
     /**
