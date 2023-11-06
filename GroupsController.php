@@ -35,9 +35,9 @@ class groupsController extends AppController{
         // Template/Groups/add.ctpのグループ情報入力フォームの内容がサーバに post された場合
         if ($this->request->is('post')) {
             // 入力されたグループ情報を変数 空レコード $groups に適用
-            // 入力されたグループ情報：gname,gid,name,admin
-            // おそらくこのコードがおかしい
+            // 入力されたグループ情報：gname,gid,name
             $group = $this->Groups->patchEntity($group, $this->request->getData());
+            $group->admin = 1;
             // team2/groups に保存成功
             if ($this->Groups->save($group)) {
                 $this->Flash->success(__('グループが保存されました。'));
@@ -97,6 +97,44 @@ class groupsController extends AppController{
                 }
             } else {
                 $this->Flash->error(__('入力されたIDと一致するユーザが見つかりませんでした。もう一度お試しください。'));
+            }
+        }
+    }
+
+    /**
+     * removeUserFromGroupアクション
+     * グループ作成者がグループメンバーを除外
+     */
+    public function removeUserFromGroup(){
+        // Groups, Accounts テーブルのモデルをロード
+        $this->loadModel('Groups');
+        $this->loadModel('Accounts');
+
+        // グループから除外するユーザIDが入力された場合( post )
+        if ($this->request->is('post')) {
+            $removeUserId = $this->request->getData('id'); // idを受け取る
+
+            // グループ情報をクエリパラメーターから取得
+            $removeUserGName = $this->request->getQuery('gname');
+            $removeUserGid = $this->request->getQuery('gid');
+
+            // ユーザの名前を取得
+            $removeUser = $this->Accounts->find()->where(['id' => $removeUserId])->first();
+
+            if($removeUser){
+                // Groupsテーブルからname == removeUserName , gname == removeUserGName , gid == removeUserGidのレコード削除
+                $this -> Groups -> deleteAll([
+                    'name' => $removeUser -> name,
+                    'gname' => $removeUserGName,
+                    'gid' => $removeUserGid
+                ]);
+
+                $this->Flash->success(__('ユーザが削除されました。'));
+                return $this->redirect(['action' => 'index']);
+            }
+            else{
+                $this->Flash->error(__('ユーザが見つかりませんでした。もう一度お試しください。'));
+                return $this->redirect(['action' => 'remove_user_from_group']);
             }
         }
     }

@@ -27,6 +27,17 @@
         ]],
            ['class' => 'btn']) ?>
         </div>
+        <div style="margin-top: 20px;" style="text-align: center;">
+            <?= $this->Html->link('ユーザを削除する', 
+            ['controller' => 'Groups',
+            'action' => 'removeUserFromGroup',
+            '?' => [
+                'gname' => $ginfo->gname,
+                'gid'   => $ginfo->gid
+            ]],
+            ['class' => 'btn']) ?>
+        </div>
+
     </table>
 
 <?php else: ?>
