@@ -8,6 +8,5 @@ JDBC　mysql-connector.jarをダウンロード
 
 解説動画のリンク
 https://youtu.be/-k71tPvKSgI
- 
 
 phpは ver 8.2.4
