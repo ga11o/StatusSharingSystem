@@ -13,6 +13,13 @@ class LogsTable extends Table
         parent::initialize($config);
 
         $this->setTable('logs');
+
+        // プライマリキーを'time'に設定
+        // 他をプライマリキーに設定すると、重複が許されないため、ログとして機能しなくなる
+        $this->setPrimaryKey(['time']);
+
+        // イベントリスナーの許可
+        $this->getEventManager()->on(new \App\Event\UpdateDataListener());
     }
 
     public function validationDefault(Validator $validator)

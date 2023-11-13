@@ -4,7 +4,27 @@
 
 <h1><?= h($ginfo->gname) ?></h1>
 
-<?= $this->Html->link('一覧に戻る', ['controller' => 'Groups', 'action' => 'index'], ['class' => 'button']) ?>
+<div>
+    <?= $this->Html->link('一覧に戻る',
+    ['controller' => 'Groups',
+    'action' => 'index'], 
+    ['class' => 'button']) ?>
+</div>
+
+
+<!-- 変更点 -->
+<div>
+    <?= $this->Html->link('招待する', 
+    ['controller' => 'Groups', 
+    'action' => 'inv',
+    '?' => [
+        'gname' => $ginfo->gname,
+        'gid'   => $ginfo->gid
+    ]],
+    ['class' => 'button']) ?>
+</div>
+<!-- 変更点 -->
+
 
 <table>
     <tr>

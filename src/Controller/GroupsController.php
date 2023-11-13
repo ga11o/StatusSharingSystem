@@ -4,10 +4,9 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\ConnectionInterface;
-
+use Cake\Event\Event;
 
 class groupsController extends AppController{
-
     /**
      * index メソッド
      * アカウント情報の一覧表示
@@ -156,6 +155,11 @@ class groupsController extends AppController{
             if ($this->Groups->save($data,false,array('physical','mental'))) {//physicalカラムとmentalカラムを更新
                 $this->Flash->success(__('状態登録完了'));
 
+                // ログ保存
+                $this->autoRender = false;
+                $event = new Event('Event.afterSave', $this, ['mental' => $data->mental, 'physical' => $data->physical]);
+                $this->getEventManager()->dispatch($event);
+
                 return $this->redirect(['action' => 'index']);
             }
 
@@ -163,4 +167,5 @@ class groupsController extends AppController{
         }
         $this->set(compact('data'));
     }
+
 }

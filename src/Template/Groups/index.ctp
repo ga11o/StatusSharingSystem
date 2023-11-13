@@ -27,4 +27,5 @@
     <div style="margin-top: 20px;" style="text-align: center;">
         <?= $this->Html->link('作成したグループへ', ['controller' => 'Groups', 'action' => 'view', $group->gid], ['class' => 'btn']) ?>
     </div>
+
 </table>
