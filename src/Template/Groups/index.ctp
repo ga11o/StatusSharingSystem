@@ -18,6 +18,7 @@
         <td><?= ($group->admin == 1) ? "管理者" : "一般" ?></td>
         <td class = "actions">
             <?= $this->Html->link(__('状態登録'), ['action' => 'statusinput', $group->name]) ?>
+            <?= $this->Html->link(__('グループ管理'),['action' => 'view',$group->gid],['class' => 'btn']) ?>
         </td>
     </tr>
     <?php endforeach; ?>
@@ -27,5 +28,4 @@
     <div style="margin-top: 20px;" style="text-align: center;">
         <?= $this->Html->link('作成したグループへ', ['controller' => 'Groups', 'action' => 'view', $group->gid], ['class' => 'btn']) ?>
     </div>
-
 </table>

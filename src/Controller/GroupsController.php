@@ -4,47 +4,68 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\ConnectionInterface;
-use Cake\Event\Event;
+
 
 class groupsController extends AppController{
+
     /**
      * index メソッド
      * アカウント情報の一覧表示
      */
+
     public function index()
     {
         // team2/accountsのデータを変数$groupsに代入
-        $groups = $this->paginate($this->Groups);
 
+        $groups = $this->paginate($this->Groups);
+    
         // 取得したアカウント情報をビュー(Template/Groups/index.ctp)に渡す
         // $groups 変数をビューにセットして、ビュー内でアカウント情報を利用できる
+
         $this->set(compact('groups'));
-        
     }
 
     /**
      * add メソッド
      * team2/groups にレコード追加
      */
+
     public function add()
     {
         // team2/groups の空レコードを作成し変数 $group に代入
+
         $group = $this->Groups->newEntity();
 
         // Template/Groups/add.ctpのグループ情報入力フォームの内容がサーバに post された場合
+
         if ($this->request->is('post')) {
-            // 入力されたグループ情報を変数 空レコード $groups に適用
-            // 入力されたグループ情報：gname,gid,name
+
+            // 入力されたグループ情報を変数(空レコード)$groups に適用
+            // 入力されたグループ情報：gname,gid
+
             $group = $this->Groups->patchEntity($group, $this->request->getData());
+
+            // グループ作成者：admin == 1
+
             $group->admin = 1;
+
+            // グループ作成者氏名
+
+            $user = $this->Auth->user();  // ログインデータ取得
+            $group->name = $user['name']; // ユーザネーム
+            
             // team2/groups に保存成功
+            
             if ($this->Groups->save($group)) {
                 $this->Flash->success(__('グループが保存されました。'));
                 return $this->redirect(['action' => 'index']);
             }
+            
             // team2/groups に保存失敗
+            
             $this->Flash->error(__('グループを保存できませんでした。もう一度お試しください。'));
         }
+        
         $this->set(compact('group')); // ビュー(Template/Groups/add.ctp)にアカウント情報を渡す
     }
 
@@ -52,6 +73,7 @@ class groupsController extends AppController{
      * view メソッド
      * グループ作成後、そのグループを表示
      */
+
     public function view($gid)
     {
         $data = $this->Groups->find()->where(['gid' => $gid])->all();
@@ -63,26 +85,34 @@ class groupsController extends AppController{
      * addUserToGroup アクション
      * グループにユーザ追加処理
      */
-    public function addUserToGroup(){
+    
+     public function addUserToGroup(){
+    
         // Groups, Accounts テーブルのモデルをロード
+    
         $this->loadModel('Groups');
         $this->loadModel('Accounts');
     
         if ($this->request->is('post')) { // POST リクエストの場合の処理
+    
             // フォームからユーザIDを受け取る
+    
             $addUserId = $this->request->getData('id');
     
             // グループ情報をクエリパラメーターから取得
+    
             $gname = $this->request->getQuery('gname');
             $gid = $this->request->getQuery('gid');
     
             // 新しいレコードを作成
+    
             $newUser = $this->Groups->newEntity();
             $newUser->gname = $gname;
             $newUser->gid = $gid;
             $newUser->admin = 0;
     
             // ユーザの名前を取得
+    
             $user = $this->Accounts->find()->select(['name'])->where(['id' => $addUserId])->first();
     
             if ($user) {
@@ -104,24 +134,32 @@ class groupsController extends AppController{
      * removeUserFromGroupアクション
      * グループ作成者がグループメンバーを除外
      */
-    public function removeUserFromGroup(){
+    
+     public function removeUserFromGroup(){
+    
         // Groups, Accounts テーブルのモデルをロード
+    
         $this->loadModel('Groups');
         $this->loadModel('Accounts');
 
         // グループから除外するユーザIDが入力された場合( post )
+    
         if ($this->request->is('post')) {
             $removeUserId = $this->request->getData('id'); // idを受け取る
 
             // グループ情報をクエリパラメーターから取得
+    
             $removeUserGName = $this->request->getQuery('gname');
             $removeUserGid = $this->request->getQuery('gid');
 
             // ユーザの名前を取得
+    
             $removeUser = $this->Accounts->find()->where(['id' => $removeUserId])->first();
 
             if($removeUser){
+    
                 // Groupsテーブルからname == removeUserName , gname == removeUserGName , gid == removeUserGidのレコード削除
+    
                 $this -> Groups -> deleteAll([
                     'name' => $removeUser -> name,
                     'gname' => $removeUserGName,
@@ -142,7 +180,8 @@ class groupsController extends AppController{
      * statusinput メソッド
      * 体調・心情をgroupsテーブルに追加
      */
-    public function statusinput($name)
+    
+     public function statusinput($name)
     {
         $data = $this->Groups->find()->where(['name' => $name])->first();//nameカラムが$nameの行を$dataに入れる。
         if (!$data) {
@@ -154,11 +193,6 @@ class groupsController extends AppController{
             $data -> mental = $input['mental'];//$dataのmentalを入力された値に更新
             if ($this->Groups->save($data,false,array('physical','mental'))) {//physicalカラムとmentalカラムを更新
                 $this->Flash->success(__('状態登録完了'));
-
-                // ログ保存
-                $this->autoRender = false;
-                $event = new Event('Event.afterSave', $this, ['mental' => $data->mental, 'physical' => $data->physical]);
-                $this->getEventManager()->dispatch($event);
 
                 return $this->redirect(['action' => 'index']);
             }
