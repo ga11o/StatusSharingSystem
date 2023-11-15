@@ -53,6 +53,7 @@ class groupsController extends AppController{
 
             $user = $this->Auth->user();  // ログインデータ取得
             $group->name = $user['name']; // ユーザネーム
+            $group->id = $user['id'];     // ユーザID
             
             // team2/groups に保存成功
             
@@ -79,6 +80,37 @@ class groupsController extends AppController{
         $data = $this->Groups->find()->where(['gid' => $gid])->all();
         $ginfo = $this->Groups->find()->where(['gid' => $gid])->first();
         $this->set(compact('data','ginfo'));
+
+        // ログをたくさん作成してから動作確認する
+
+        $User = $this->Auth->user();
+        $AdUser = $this->Groups->find()->where(['gid' => $gid, 'admin' => 1])->first();
+
+        // 管理者である場合
+        if ($AdUser && $User['id'] == $AdUser->id) {
+            $this->loadModel('Logs');
+            $member = $this->Logs->newEntity();
+            $member->id = 'id';
+            // メンバーの更新状況を確認
+            // メンバー全員の情報を取得
+            $Members = $this->Groups->find()->where(['gid' => $gid, 'admin' => 0])->all();
+            if ($Members !== null) {
+                foreach ($Members as $Members) {
+                    // メンバーのIDから直近2つのログを取得
+                    $result = $this->Logs->find()->order(['time' => 'DESC'])->where(['id' => $Members->id])->limit(2)->toArray();
+                    if (count($result) == 2) {
+                        $physical1 = $result[0]->physical;
+                        $physical2 = $result[1]->physical;
+                        $mental1 = $result[0]->mental;
+                        $mental2 = $result[1]->mental;
+                        // 体調または心情が2段階以上悪化していたらFlashメッセージ
+                        if ((($physical1 - $physical2) <= -1) || (($mental1 - $mental2) <= -1)) {
+                            $this->Flash->error(__('{0}さんの状態が悪化しているようです', $Members->name));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -110,6 +142,7 @@ class groupsController extends AppController{
             $newUser->gname = $gname;
             $newUser->gid = $gid;
             $newUser->admin = 0;
+            $newUser->id = $addUserId;
     
             // ユーザの名前を取得
     
