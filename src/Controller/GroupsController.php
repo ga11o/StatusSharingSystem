@@ -4,7 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\ConnectionInterface;
-
+use Cake\I18n\Time;
 
 class groupsController extends AppController{
 
@@ -214,23 +214,49 @@ class groupsController extends AppController{
      * 体調・心情をgroupsテーブルに追加
      */
     
-     public function statusinput($name)
+     public function statusinput($name,$gid)
     {
-        $data = $this->Groups->find()->where(['name' => $name])->first();//nameカラムが$nameの行を$dataに入れる。
+        $data = $this->Groups->find()->where(['name' => $name,'gid' => $gid])->first();//nameカラムが$nameの行を$dataに入れる。
         if (!$data) {
             throw new NotFoundException(__('データが見つかりません。'));
         }
+        $logTable = \Cake\ORM\TableRegistry::get('Logs');
+        $log = $logTable->newEntity();
         if ($this->request->is('post')) {
             $input = $this->request->getData();//postで受け取った内容
-            $data -> physical = $input['physical'];//$dataのphysicalを入力された値に更新
-            $data -> mental = $input['mental'];//$dataのmentalを入力された値に更新
-            if ($this->Groups->save($data,false,array('physical','mental'))) {//physicalカラムとmentalカラムを更新
-                $this->Flash->success(__('状態登録完了'));
+            if(count($input)==2){
+                $data -> physical = $input['physical'];//$dataのphysicalを入力された値に更新
+                $data -> mental = $input['mental'];//$dataのmentalを入力された値に更新
+                if ($this->Groups->save($data,false,array('physical','mental'))) {//physicalカラムとmentalカラムを更新
+                    $this->Flash->success(__('状態登録完了'));
 
-                return $this->redirect(['action' => 'index']);
+                    //return $this->redirect(['action' => 'index']);
+                }
+
+                $id = $this->Auth->user('id');
+                $time = Time::now()->i18nFormat('yyyy/MM/dd HH:mm:ss');
+                debug($time);
+                $loginfo = [
+                    'id' => $id,
+                    'physical' => $input['physical'],
+                    'mental' => $input['mental'],
+                    'time' => $time
+                ];
+                $log = $logTable->patchEntity($log, $loginfo);
+                //debug($log);
+                if ($logTable->save($log)) {
+                    $this->Flash->success(__('The log has been saved.'));
+    
+                    return $this->redirect(['action' => 'index']);
+                }else {
+                    debug("Data save to Logs table failed");
+                    debug($log->getErrors());
+                }
+
+                $this->Flash->error(__('状態登録に失敗しました。再入力してください。'));
+            }else{
+                $this->Flash->error(__('すべての項目を入力してください。'));
             }
-
-            $this->Flash->error(__('状態登録に失敗しました。再入力してください。'));
         }
         $this->set(compact('data'));
     }
