@@ -90,11 +90,12 @@ class AccountsController extends AppController
 
         // グループ参加機能
         if ($this->request->is('post')) {
-            $gid = $this->request->getData('グループID');
+            $gid = $this->request->getData('gid');
 
             // 渡されたgidとGroupテーブルのgidが一致するレコード
             $data = $this->Groups->find()->where(['gid' => $gid])->first();
 
+            $this->Flash->success(__($gid));
             if ($data == null) {
                 $this->Flash->error(__('グループが見つかりませんでした。'));
             } else {

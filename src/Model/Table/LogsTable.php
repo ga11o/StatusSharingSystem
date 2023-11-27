@@ -14,12 +14,7 @@ class LogsTable extends Table
 
         $this->setTable('logs');
 
-        // プライマリキーを'time'に設定
-        // 他をプライマリキーに設定すると、重複が許されないため、ログとして機能しなくなる
-        $this->setPrimaryKey(['time']);
-
-        // イベントリスナーの許可
-        $this->getEventManager()->on(new \App\Event\UpdateDataListener());
+        $this->setPrimaryKey(['id','time']);
     }
 
     public function validationDefault(Validator $validator)
@@ -42,7 +37,7 @@ class LogsTable extends Table
 
         $validator
             ->scalar('time')
-            ->maxLength('time', 12)
+            ->maxLength('time', 40)
             ->requirePresence('time', 'create')
             ->notEmptyString('time');
 

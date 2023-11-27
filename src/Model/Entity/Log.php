@@ -10,5 +10,6 @@ class Log extends Entity
         'mental' => true,
         'physical' => true,
         'time' => true,
+        'gid' => true,
     ];
 }

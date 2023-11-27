@@ -27,6 +27,7 @@ class Group extends Entity
         'gname'=>true,
         'admin'=>true,
         'gid'=>true,
+        'id'=> true,
     ];
 
     // このメソッドの戻り先・記載箇所が不明

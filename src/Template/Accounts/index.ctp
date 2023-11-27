@@ -36,7 +36,7 @@
     <?php endforeach; ?>
     <div style="margin-top: 20px;" style="text-align: center;">
         <?= $this->Form->create(null, ['url' => ['action' => 'index', $data->id], 'class' => 'form']) ?>
-        <?= $this->Form->input('グループ ID', ['lable' => '参加する']) ?>
+        <?= $this->Form->input('グループ ID', ['name' => 'gid']) ?>
         <?= $this->Form->submit('参加する') ?>
         <?= $this->Form->end() ?>
     </div>

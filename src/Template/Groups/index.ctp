@@ -17,7 +17,7 @@
         <td><?= h($group->name) ?></td>
         <td><?= ($group->admin == 1) ? "管理者" : "一般" ?></td>
         <td class = "actions">
-            <?= $this->Html->link(__('状態登録'), ['action' => 'statusinput', $group->name]) ?>
+            <?= $this->Html->link(__('状態登録'), ['action' => 'statusinput', $group->name, $group->gid]) ?>
             <?= $this->Html->link(__('グループ管理'),['action' => 'view',$group->gid],['class' => 'btn']) ?>
         </td>
     </tr>
