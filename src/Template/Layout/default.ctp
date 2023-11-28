@@ -1,6 +1,4 @@
 <?php
-/* 40~45行目で、画面切り替えのボタンを画面上部に作成 */
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -44,6 +42,9 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                 </li>
                 <li class="name">
                     <h1><a href="Logs">Logs</a></h1>
+                </li>
+                <li class="name">
+                    <h1><a href="Groups">Groups</a></h1>
                 </li>
             </ul>
             <ul class="right">

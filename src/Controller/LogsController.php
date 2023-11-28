@@ -5,9 +5,9 @@ use App\Controller\AppController;
 
 class LogsController extends AppController
 {
-    public function index()
+    public function index($id = null,$gid = null)
     {
-        $logs = $this->paginate($this->Logs);
+        $logs = $this->paginate($this->Logs->find('all', ['order' => ['time' => 'DESC']])->where(['id' => $id, 'gid' => $gid]));
 
         $this->set(compact('logs'));
     }

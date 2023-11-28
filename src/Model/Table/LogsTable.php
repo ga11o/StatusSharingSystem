@@ -13,6 +13,8 @@ class LogsTable extends Table
         parent::initialize($config);
 
         $this->setTable('logs');
+
+        $this->setPrimaryKey(['id','time']);
     }
 
     public function validationDefault(Validator $validator)
@@ -35,7 +37,7 @@ class LogsTable extends Table
 
         $validator
             ->scalar('time')
-            ->maxLength('time', 12)
+            ->maxLength('time', 40)
             ->requirePresence('time', 'create')
             ->notEmptyString('time');
 

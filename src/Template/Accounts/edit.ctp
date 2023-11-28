@@ -7,13 +7,10 @@
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Form->postLink(
-                __('Delete'),
-                ['action' => 'delete', $account->name],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $account->name)]
-            )
-        ?></li>
-        <li><?= $this->Html->link(__('List Accounts'), ['action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('ホーム'), ['action' => 'index']) ?> </li>
+        <li><?= $this->Html->link('あなたの情報', ['controller' => 'Accounts', 'action' => 'view'], ['class' => 'btn']) ?></li>
+        <li><?= $this->Html->link(__('アカウント編集'), ['action' => 'edit',$account['id']]) ?> </li>
+        <li><?= $this->Form->postLink(__('アカウント削除'), ['action' => 'delete']) ?> </li>
     </ul>
 </nav>
 <div class="accounts form large-9 medium-8 columns content">

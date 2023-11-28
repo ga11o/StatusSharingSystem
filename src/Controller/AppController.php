@@ -66,7 +66,6 @@ class AppController extends Controller
         //$this->loadComponent('Security');
     }
 
-    /* この関数で画面の切り替えが可能になる */
     public function isAuthorized($user)
     {
         return true;
